@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Choose Pictures" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Edit Control Lines" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="FaceMorph" />
+    </group>
+
+    <item android:title="@string/project">
+        <menu>
+            <item
+                android:id="@+id/nav_new"
+                android:icon="@drawable/ic_new_folder_white"
+                android:title="New" />
+            <item
+                android:id="@+id/nav_save"
+                android:icon="@drawable/ic_new_folder_white"
+                android:title="Save" />
+            <item
+                android:id="@+id/nav_open"
+                android:title="Open" />
+        </menu>
+    </item>
+
+</menu>
