@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_choose_pictures) {
             setPhotoPreviewFragment(fragmentManager);
+        } else if (id == R.id.nav_edit_lines) {
+            setPhotoEditFragment(fragmentManager);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -106,6 +108,13 @@ public class MainActivity extends AppCompatActivity
 
     private void setPhotoPreviewFragment(FragmentManager fragmentManager) {
         PhotoPreviewFragment fragment = new PhotoPreviewFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+    }
+
+    private void setPhotoEditFragment(FragmentManager fragmentManager) {
+        PhotoEditFragment fragment = new PhotoEditFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();

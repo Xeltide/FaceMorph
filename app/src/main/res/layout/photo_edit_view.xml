@@ -6,11 +6,10 @@
     android:layout_height="match_parent"
     android:background="#555555">
 
-    <SurfaceView
+    <com.bcit.jabe.facemorph.PhotoEditView
         android:id="@+id/surfaceView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/imgPreview1Button"
+            android:id="@+id/imgEdit1Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -34,7 +33,7 @@
             android:src="@drawable/ic_1_box" />
 
         <ImageButton
-            android:id="@+id/imgPreview2Button"
+            android:id="@+id/imgEdit2Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
