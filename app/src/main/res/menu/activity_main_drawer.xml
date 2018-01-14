@@ -5,15 +5,15 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_choose_pictures"
             android:icon="@drawable/ic_menu_camera"
             android:title="Choose Pictures" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_edit_lines"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Edit Control Lines" />
+            android:title="Edit Lines" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_face_morph"
             android:icon="@drawable/ic_menu_gallery"
             android:title="FaceMorph" />
     </group>
@@ -22,14 +22,15 @@
         <menu>
             <item
                 android:id="@+id/nav_new"
-                android:icon="@drawable/ic_new_folder_white"
+                android:icon="@drawable/ic_plus"
                 android:title="New" />
             <item
                 android:id="@+id/nav_save"
-                android:icon="@drawable/ic_new_folder_white"
+                android:icon="@drawable/ic_save"
                 android:title="Save" />
             <item
                 android:id="@+id/nav_open"
+                android:icon="@drawable/ic_folder_open"
                 android:title="Open" />
         </menu>
     </item>
