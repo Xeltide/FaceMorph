@@ -7,6 +7,7 @@
         <item
             android:id="@+id/nav_choose_pictures"
             android:icon="@drawable/ic_menu_camera"
+            android:checked="true"
             android:title="Choose Pictures" />
         <item
             android:id="@+id/nav_edit_lines"

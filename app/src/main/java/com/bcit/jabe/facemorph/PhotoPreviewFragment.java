@@ -27,6 +27,7 @@ public class PhotoPreviewFragment extends Fragment {
     private final int PICK_IMAGE = 1;
     private boolean firstImage = true;
     private boolean enablePlusClick = true;
+    private MainActivity activity;
     private ImageView imgPreview;
     private ImageButton imgPreview1Button;
     private ImageButton imgPreview2Button;
@@ -34,6 +35,7 @@ public class PhotoPreviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.photo_preview_view, container, false);
+        activity = (MainActivity)getActivity();
 
         initImgPreview(view);
         initImgPreviewButtons(view);
@@ -66,7 +68,7 @@ public class PhotoPreviewFragment extends Fragment {
                 firstImage = true;
                 imgPreview1Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.selected)));
                 imgPreview2Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.unselected)));
-                if (((MainActivity)getActivity()).getStore().getStartFrame() != null) {
+                if (activity.getStore().getStartFrame() != null) {
                     imgPreview.setImageBitmap(((MainActivity)getActivity()).getStore().getStartFrame());
                     enablePlusClick = false;
                 } else {
@@ -85,7 +87,7 @@ public class PhotoPreviewFragment extends Fragment {
                 firstImage = false;
                 imgPreview2Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.selected)));
                 imgPreview1Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.unselected)));
-                if (((MainActivity)getActivity()).getStore().getEndFrame() != null) {
+                if (activity.getStore().getEndFrame() != null) {
                     imgPreview.setImageBitmap(((MainActivity)getActivity()).getStore().getEndFrame());
                     enablePlusClick = false;
                 } else {
@@ -100,7 +102,8 @@ public class PhotoPreviewFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (((MainActivity)getActivity()).getStore().getStartFrame() != null) {
+
+        if (activity.getStore().getStartFrame() != null) {
             imgPreview.setImageBitmap(((MainActivity)getActivity()).getStore().getStartFrame());
             enablePlusClick = false;
         }
@@ -112,13 +115,13 @@ public class PhotoPreviewFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 Uri uri = data.getData();
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getApplicationContext().getContentResolver(), uri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getApplicationContext().getContentResolver(), uri);
                     imgPreview.setImageBitmap(bitmap);
                     enablePlusClick = false;
                     if (firstImage) {
-                        ((MainActivity)getActivity()).getStore().setStartFrame(bitmap);
+                        activity.getStore().setStartFrame(bitmap);
                     } else {
-                        ((MainActivity)getActivity()).getStore().setEndFrame(bitmap);
+                        activity.getStore().setEndFrame(bitmap);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
