@@ -17,7 +17,7 @@ public class LinePair extends Pair<Line> {
         super(first, second);
 
         Paint p = new Paint();
-        p.setStrokeWidth(8);
+        p.setStrokeWidth(10);
         setPaint(p);
     }
 

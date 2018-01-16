@@ -6,6 +6,42 @@
     android:layout_height="match_parent"
     android:background="#555555">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/drawFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:backgroundTint="@color/drawGreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/lead_pencil" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/moveFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:backgroundTint="@color/moveBlue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drawFAB"
+        app:srcCompat="@drawable/arrow_all" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/eraseFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:backgroundTint="@color/deleteRed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moveFAB"
+        app:srcCompat="@drawable/eraser_variant" />
+
     <com.bcit.jabe.facemorph.PhotoEditView
         android:id="@+id/surfaceView"
         android:layout_width="0dp"

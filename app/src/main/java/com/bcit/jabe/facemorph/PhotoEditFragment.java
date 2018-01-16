@@ -2,8 +2,8 @@ package com.bcit.jabe.facemorph;
 
 import android.app.Fragment;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +16,9 @@ import android.widget.ImageButton;
 public class PhotoEditFragment extends Fragment {
 
     private MainActivity activity;
+    private FloatingActionButton drawFAB;
+    private FloatingActionButton moveFAB;
+    private FloatingActionButton eraseFAB;
     private ImageButton imgEdit1Button;
     private ImageButton imgEdit2Button;
     private PhotoEditView editView;
@@ -25,6 +28,7 @@ public class PhotoEditFragment extends Fragment {
         View view = inflater.inflate(R.layout.photo_edit_view, container, false);
         activity = (MainActivity)getActivity();
 
+        initImgActions(view);
         initImgEditButtons(view);
 
         return view;
@@ -37,6 +41,35 @@ public class PhotoEditFragment extends Fragment {
         editView = activity.findViewById(R.id.surfaceView);
         editView.setActivity(activity);
         editView.setCurrentImage(activity.getStore().getStartFrame());
+    }
+
+    private void initImgActions(View v) {
+        drawFAB = v.findViewById(R.id.drawFAB);
+        drawFAB.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                activity.getStore().setPhotoEditMode(PhotoEditMode.DRAW);
+            }
+        });
+
+        moveFAB = v.findViewById(R.id.moveFAB);
+        moveFAB.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                activity.getStore().setPhotoEditMode(PhotoEditMode.MOVE);
+            }
+        });
+
+        eraseFAB = v.findViewById(R.id.eraseFAB);
+        eraseFAB.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                activity.getStore().setPhotoEditMode(PhotoEditMode.ERASE);
+            }
+        });
     }
 
     private void initImgEditButtons(View v) {

@@ -28,6 +28,8 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
     private int viewHeight;
     private int viewMaxH;
 
+    private Point heldPoint;
+
     public PhotoEditView(Context context) {
         super(context);
 
@@ -69,8 +71,21 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        PhotoEditMode mode = activity.getStore().getPhotoEditMode();
         int action = event.getAction();
 
+        if (mode == PhotoEditMode.DRAW) {
+            drawTouch(event, action);
+        } else if (mode == PhotoEditMode.MOVE) {
+            moveTouch(event, action);
+        } else if (mode == PhotoEditMode.ERASE) {
+            eraseTouch(event, action);
+        }
+
+        return true;
+    }
+
+    private void drawTouch(MotionEvent event, int action) {
         if (action == MotionEvent.ACTION_DOWN) {
             LinePair p = new LinePair();
             p.getFirst().setTail((int)event.getX(), (int)event.getY());
@@ -85,8 +100,62 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
             p.getFirst().setHead((int)event.getX(), (int)event.getY());
             p.getSecond().setHead((int)event.getX(), (int)event.getY());
         }
+    }
 
-        return true;
+    private void moveTouch(MotionEvent event, int action) {
+        if (action == MotionEvent.ACTION_DOWN) {
+            for (LinePair pair : activity.getStore().getLinePairs()) {
+                Line l = pair.getFirst();
+                if (l.getTail().isClicked(event.getX(), event.getY())) {
+                    heldPoint = l.getTail();
+                    break;
+                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                    heldPoint = l.getHead();
+                    break;
+                }
+
+                l = pair.getSecond();
+                if (l.getTail().isClicked(event.getX(), event.getY())) {
+                    heldPoint = l.getTail();
+                    break;
+                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                    heldPoint = l.getHead();
+                    break;
+                }
+            }
+        } else if (action == MotionEvent.ACTION_MOVE) {
+            if (heldPoint != null) {
+                heldPoint.setPoint((int)event.getX(), (int)event.getY());
+            }
+        } else if (action == MotionEvent.ACTION_UP) {
+            heldPoint = null;
+        }
+    }
+
+    private void eraseTouch(MotionEvent event, int action) {
+        if (action == MotionEvent.ACTION_DOWN) {
+            ArrayList<LinePair> lines = activity.getStore().getLinePairs();
+            for (int i = 0; i < lines.size(); i++) {
+                LinePair pair = lines.get(i);
+                Line l = pair.getFirst();
+                if (l.getTail().isClicked(event.getX(), event.getY())) {
+                    activity.getStore().removeLinePair(i);
+                    break;
+                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                    activity.getStore().removeLinePair(i);
+                    break;
+                }
+
+                l = pair.getSecond();
+                if (l.getTail().isClicked(event.getX(), event.getY())) {
+                    activity.getStore().removeLinePair(i);
+                    break;
+                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                    activity.getStore().removeLinePair(i);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -126,6 +195,7 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
         if (b != null) {
             float w = b.getWidth();
             float h = b.getHeight();
+            // TODO: remove wPerH
             wPerH = w / h;
             int viewW = (int)(viewMaxH * wPerH);
             if (viewW > viewMaxW) {

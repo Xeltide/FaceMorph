@@ -13,6 +13,8 @@ import java.util.ArrayList;
 public class ActivityStore implements Serializable {
 
     private int lastItem = R.id.nav_choose_pictures;
+    private PhotoEditMode editAction = PhotoEditMode.DRAW;
+
     private Bitmap startFrame;
     private Bitmap endFrame;
     private ArrayList<LinePair> lines;
@@ -52,6 +54,14 @@ public class ActivityStore implements Serializable {
 
     public boolean isFirstFrame() {
         return firstFrame;
+    }
+
+    public PhotoEditMode getPhotoEditMode() {
+        return editAction;
+    }
+
+    public void setPhotoEditMode(PhotoEditMode mode) {
+        editAction = mode;
     }
 
     public ArrayList<LinePair> getLinePairs() {

@@ -5,4 +5,7 @@
     <color name="colorAccent">#111111</color>
     <color name="selected">#333</color>
     <color name="unselected">#000</color>
+    <color name="drawGreen">#00CC55</color>
+    <color name="moveBlue">#3333FF</color>
+    <color name="deleteRed">#FF4433</color>
 </resources>
