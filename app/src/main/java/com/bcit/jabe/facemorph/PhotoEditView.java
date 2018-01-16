@@ -168,12 +168,15 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
                 canvas.drawBitmap(scaled, 0, 0, null);
             }
 
+            ArrayList<LinePair> pairs = activity.getStore().getLinePairs();
             if (activity.getStore().isFirstFrame()) {
-                for (LinePair pair : activity.getStore().getLinePairs()) {
+                for (int i = 0; i < pairs.size(); i++) {
+                    LinePair pair = pairs.get(i);
                     pair.drawFirst(canvas);
                 }
             } else {
-                for (LinePair pair : activity.getStore().getLinePairs()) {
+                for (int i = 0; i < pairs.size(); i++) {
+                    LinePair pair = pairs.get(i);
                     pair.drawSecond(canvas);
                 }
             }
