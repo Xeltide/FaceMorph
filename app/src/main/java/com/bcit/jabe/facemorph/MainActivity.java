@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity
             setPhotoPreviewFragment(fragmentManager);
         } else if (id == R.id.nav_edit_lines) {
             setPhotoEditFragment(fragmentManager);
+        } else if (id == R.id.nav_face_morph) {
+            setFaceMorphFragment(fragmentManager);
         }
     }
 
@@ -113,6 +115,13 @@ public class MainActivity extends AppCompatActivity
 
     private void setPhotoEditFragment(FragmentManager fragmentManager) {
         PhotoEditFragment fragment = new PhotoEditFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+    }
+
+    private void setFaceMorphFragment(FragmentManager fragmentManager) {
+        MorphFragment fragment = new MorphFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();

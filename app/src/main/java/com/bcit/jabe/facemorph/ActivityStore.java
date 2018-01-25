@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by Xeltide on 12/01/2018.
@@ -17,11 +18,24 @@ public class ActivityStore implements Serializable {
 
     private Bitmap startFrame;
     private Bitmap endFrame;
+    private LinkedList<Bitmap> frames;
+    private int frameCount = 0;
     private ArrayList<LinePair> lines;
     private boolean firstFrame = true;
+    private boolean faceMorphed = false;
+    private int viewingFrameNum = -1;
+    private Point bitmapScale;
 
     ActivityStore() {
         this.lines = new ArrayList<>();
+    }
+
+    public Point getBitmapScale() {
+        return bitmapScale;
+    }
+
+    public void setBitmapScale(Point p) {
+        this.bitmapScale = p;
     }
 
     public void setStartFrame(Bitmap bitmap) {
@@ -40,6 +54,30 @@ public class ActivityStore implements Serializable {
         return endFrame;
     }
 
+    public void setFrames(LinkedList<Bitmap> frames) {
+        this.frames = frames;
+    }
+
+    public void addFrame(Bitmap bitmap) {
+        frames.add(bitmap);
+    }
+
+    public LinkedList<Bitmap> getFrames() {
+        return frames;
+    }
+
+    public Bitmap getFrame(int index) {
+        return frames.get(index);
+    }
+
+    public void setFrameCount(int totalFrames) {
+        frameCount = totalFrames;
+    }
+
+    public int getFrameCount() {
+        return frameCount;
+    }
+
     public void setLastItem(int id) {
         lastItem = id;
     }
@@ -48,12 +86,20 @@ public class ActivityStore implements Serializable {
         return lastItem;
     }
 
-    public void setFirstFrame(boolean isFirstFrame) {
+    public void setIsFirstFrame(boolean isFirstFrame) {
         firstFrame = isFirstFrame;
     }
 
     public boolean isFirstFrame() {
         return firstFrame;
+    }
+
+    public void setIsFaceMorphed(boolean isFaceMorphed) {
+        faceMorphed = isFaceMorphed;
+    }
+
+    public boolean isFaceMorphed() {
+        return faceMorphed;
     }
 
     public PhotoEditMode getPhotoEditMode() {
@@ -74,6 +120,14 @@ public class ActivityStore implements Serializable {
 
     public void removeLinePair(int index) {
         lines.remove(index);
+    }
+
+    public int getViewingFrameNum() {
+        return viewingFrameNum;
+    }
+
+    public void setViewingFrameNum(int index) {
+        viewingFrameNum = index;
     }
 
     public void saveToBundle(Bundle bundle) {

@@ -58,7 +58,44 @@ public class Point extends Drawable implements Clickable {
         return false;
     }
 
+    public Point getPerpendicularVector() {
+        return new Point(-y, x);
+    }
+
+    public float getVectorLength() {
+        return (float)Math.sqrt((x * x) + (y * y));
+    }
+
+    public float getDistance() {
+        return d;
+    }
+
+    public void setDistance(float distance) {
+        d = distance;
+    }
+
+    public void add(Point adds) {
+        this.x += adds.getX();
+        this.y += adds.getY();
+    }
+
+    public void minus(Point subtracts) {
+        this.x -= subtracts.getX();
+        this.y -= subtracts.getY();
+    }
+
+    public void scale(float scalar) {
+        this.x *= scalar;
+        this.y *= scalar;
+    }
+
+    public void scale(float scaleX, float scaleY) {
+        this.x *= scaleX;
+        this.y *= scaleY;
+    }
+
     private int x;
     private int y;
+    private float d;
     private int radius = 50;
 }

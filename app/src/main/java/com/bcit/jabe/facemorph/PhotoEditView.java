@@ -105,22 +105,26 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
     private void moveTouch(MotionEvent event, int action) {
         if (action == MotionEvent.ACTION_DOWN) {
             for (LinePair pair : activity.getStore().getLinePairs()) {
-                Line l = pair.getFirst();
-                if (l.getTail().isClicked(event.getX(), event.getY())) {
-                    heldPoint = l.getTail();
-                    break;
-                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                    heldPoint = l.getHead();
-                    break;
-                }
+                Line l;
 
-                l = pair.getSecond();
-                if (l.getTail().isClicked(event.getX(), event.getY())) {
-                    heldPoint = l.getTail();
-                    break;
-                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                    heldPoint = l.getHead();
-                    break;
+                if (activity.getStore().isFirstFrame()) {
+                    l = pair.getFirst();
+                    if (l.getTail().isClicked(event.getX(), event.getY())) {
+                        heldPoint = l.getTail();
+                        break;
+                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                        heldPoint = l.getHead();
+                        break;
+                    }
+                } else {
+                    l = pair.getSecond();
+                    if (l.getTail().isClicked(event.getX(), event.getY())) {
+                        heldPoint = l.getTail();
+                        break;
+                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                        heldPoint = l.getHead();
+                        break;
+                    }
                 }
             }
         } else if (action == MotionEvent.ACTION_MOVE) {
@@ -137,22 +141,26 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
             ArrayList<LinePair> lines = activity.getStore().getLinePairs();
             for (int i = 0; i < lines.size(); i++) {
                 LinePair pair = lines.get(i);
-                Line l = pair.getFirst();
-                if (l.getTail().isClicked(event.getX(), event.getY())) {
-                    activity.getStore().removeLinePair(i);
-                    break;
-                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                    activity.getStore().removeLinePair(i);
-                    break;
-                }
+                Line l;
 
-                l = pair.getSecond();
-                if (l.getTail().isClicked(event.getX(), event.getY())) {
-                    activity.getStore().removeLinePair(i);
-                    break;
-                } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                    activity.getStore().removeLinePair(i);
-                    break;
+                if (activity.getStore().isFirstFrame()) {
+                    l = pair.getFirst();
+                    if (l.getTail().isClicked(event.getX(), event.getY())) {
+                        activity.getStore().removeLinePair(i);
+                        break;
+                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                        activity.getStore().removeLinePair(i);
+                        break;
+                    }
+                } else {
+                    l = pair.getSecond();
+                    if (l.getTail().isClicked(event.getX(), event.getY())) {
+                        activity.getStore().removeLinePair(i);
+                        break;
+                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                        activity.getStore().removeLinePair(i);
+                        break;
+                    }
                 }
             }
         }
@@ -165,6 +173,7 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
             canvas.drawColor(Color.BLACK);
             if (currentImage != null) {
                 Bitmap scaled = Bitmap.createScaledBitmap(currentImage, viewWidth, viewHeight, true);
+                activity.getStore().setBitmapScale(new Point(scaled.getWidth(), scaled.getHeight()));
                 canvas.drawBitmap(scaled, 0, 0, null);
             }
 

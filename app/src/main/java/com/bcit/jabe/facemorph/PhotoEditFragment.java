@@ -78,7 +78,7 @@ public class PhotoEditFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                activity.getStore().setFirstFrame(true);
+                activity.getStore().setIsFirstFrame(true);
                 imgEdit1Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.selected)));
                 imgEdit2Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.unselected)));
                 editView.setCurrentImage(activity.getStore().getStartFrame());
@@ -90,7 +90,7 @@ public class PhotoEditFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                activity.getStore().setFirstFrame(false);
+                activity.getStore().setIsFirstFrame(false);
                 imgEdit2Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.selected)));
                 imgEdit1Button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.unselected)));
                 editView.setCurrentImage(activity.getStore().getEndFrame());

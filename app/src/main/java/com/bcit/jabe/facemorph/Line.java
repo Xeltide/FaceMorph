@@ -46,6 +46,10 @@ public class Line extends Drawable {
         return head;
     }
 
+    public Point getVector() {
+        return new Point(head.getX() - tail.getX(), head.getY() - tail.getY());
+    }
+
     public void setDrawPoints(boolean drawPoints) {
         this.drawPoints = drawPoints;
     }
