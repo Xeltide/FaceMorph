@@ -41,13 +41,12 @@ public class Morpher {
                 for (int x = 0; x < b.getWidth(); x++) {
                     ArrayList<Point> primePoints = new ArrayList<>();
                     Point p = new Point(x, y);
-                    /*for (int line = 0 ; line < frameLines.get(frame).size(); line++) {
-                        Point pPrm = getSrcPixel(frameLines.get(frame - 1).get(line), p, frameLines.get(frame).get(line));
+                    for (int line = 0 ; line < frameLines.get(frame).size(); line++) {
+                        Point pPrm = getSrcPixel(frameLines.get(frame).get(line), p, frameLines.get(frame - 1).get(line));
                         primePoints.add(pPrm);
                     }
 
-                    Point finalSource = getWeightedPoint(p, primePoints);*/
-                    Point finalSource = getSrcPixel(frameLines.get(1).get(0), p, frameLines.get(0).get(0));
+                    Point finalSource = getWeightedPoint(p, primePoints);
                     if (finalSource.getX() < 0) {
                         finalSource.setX(0);
                     } else if (finalSource.getX() >= b.getWidth()) {
@@ -67,7 +66,6 @@ public class Morpher {
                         src = betweenFrames.getLast();
                     }
                     int pixel = src.getPixel(finalSource.getX(), finalSource.getY());
-                    android.util.Log.d("PIXEL ", "R: " + Color.red(pixel) + ", G: " + Color.green(pixel) + ", B: " + Color.blue(pixel));
                     paint.setColor(pixel);
                     c.drawPoint(x, y, paint);
                 }
@@ -149,20 +147,28 @@ public class Morpher {
     }
 
     public Point getWeightedPoint(Point origin, ArrayList<Point> primePoints) {
-        Point avgPoint = new Point();
+        float avgX = 0;
+        float avgY = 0;
         float totalWeight = 0;
         for (int i = 0; i < primePoints.size(); i++) {
             float weight = getWeight(primePoints.get(i).getDistance());
-            primePoints.get(i).minus(origin);
-            primePoints.get(i).scale(weight);
-            avgPoint.add(primePoints.get(i));
+            float x = primePoints.get(i).getX();
+            float y = primePoints.get(i).getY();
+            x -= origin.getX();
+            y -= origin.getY();
+            x *= weight;
+            y *=  weight;
+            avgX += x;
+            avgY += y;
             totalWeight += weight;
         }
 
-        avgPoint.scale( 1 / totalWeight);
-        avgPoint.add(origin);
+        avgX /= totalWeight;
+        avgY /= totalWeight;
+        avgX += origin.getX();
+        avgY += origin.getY();
 
-        return avgPoint;
+        return new Point(Math.round(avgX), Math.round(avgY));
     }
 
     public float getWeight(float distance) {
