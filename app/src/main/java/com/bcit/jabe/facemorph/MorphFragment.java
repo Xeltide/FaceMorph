@@ -2,6 +2,7 @@ package com.bcit.jabe.facemorph;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,6 +27,11 @@ public class MorphFragment extends Fragment {
     private FloatingActionButton cycleRightFAB;
     private FloatingActionButton cycleLeftFAB;
     private ProgressBar progress;
+    private boolean cyclingImages = false;
+
+    private Handler handler;
+    private Runnable playLoop;
+    private int frameDelayMS = 250;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +69,19 @@ public class MorphFragment extends Fragment {
 
         progress = activity.findViewById(R.id.progressBar);
 
+        handler = new Handler();
+        playLoop = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    selectFrameRight();
+                } finally {
+                    handler.postDelayed(playLoop, frameDelayMS);
+                }
+            }
+        };
+
         morphPlayFAB = activity.findViewById(R.id.morphPlayFAB);
         morphPlayFAB.setOnClickListener(new View.OnClickListener() {
 
@@ -73,8 +92,15 @@ public class MorphFragment extends Fragment {
                     t.start();
                     activity.getStore().setIsFaceMorphed(true);
                     progress.setVisibility(View.VISIBLE);
-                } else if (activity.getStore().isFaceMorphed()) {
-
+                    morphPlayFAB.setImageResource(R.drawable.play);
+                } else if (activity.getStore().isFaceMorphed() && !cyclingImages) {
+                    playLoop.run();
+                    morphPlayFAB.setImageResource(R.drawable.pause);
+                    cyclingImages = true;
+                } else if (activity.getStore().isFaceMorphed() && cyclingImages) {
+                    handler.removeCallbacks(playLoop);
+                    morphPlayFAB.setImageResource(R.drawable.play);
+                    cyclingImages = false;
                 }
             }
         });
@@ -103,7 +129,7 @@ public class MorphFragment extends Fragment {
         int viewing = store.getViewingFrameNum();
 
         if (viewing == -1) {
-            if (store.getFrameCount() > 0) {
+            if (store.getFrameCount() > 0 && store.isFaceMorphed()) {
                 store.setViewingFrameNum(0);
                 frameView.setImageBitmap(store.getFrame(0));
             } else {
@@ -114,7 +140,7 @@ public class MorphFragment extends Fragment {
             store.setViewingFrameNum(-1);
             frameView.setImageBitmap(store.getStartFrame());
         } else {
-            if (viewing < store.getFrameCount() - 1) {
+            if (viewing < store.getFrameCount() - 1 && store.isFaceMorphed()) {
                 store.setViewingFrameNum(store.getViewingFrameNum() + 1);
                 frameView.setImageBitmap(store.getFrame(store.getViewingFrameNum()));
             } else {
@@ -132,7 +158,7 @@ public class MorphFragment extends Fragment {
             store.setViewingFrameNum(-2);
             frameView.setImageBitmap(store.getEndFrame());
         } else if (viewing == -2) {
-            if (store.getFrameCount() > 0) {
+            if (store.getFrameCount() > 0 && store.isFaceMorphed()) {
                 store.setViewingFrameNum(store.getFrameCount() - 1);
                 frameView.setImageBitmap(store.getFrame(store.getViewingFrameNum()));
             } else {
@@ -140,7 +166,7 @@ public class MorphFragment extends Fragment {
                 frameView.setImageBitmap(store.getStartFrame());
             }
         } else {
-            if (viewing > 0) {
+            if (viewing > 0 && store.isFaceMorphed()) {
                 store.setViewingFrameNum(store.getViewingFrameNum() - 1);
                 frameView.setImageBitmap(store.getFrame(store.getViewingFrameNum()));
             } else {

@@ -18,10 +18,12 @@ import java.util.ArrayList;
 public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder holder;
-    private MainActivity activity;
+    private ActivityStore store;
     private PhotoEditThread thread;
 
     private Bitmap currentImage;
+    private Bitmap scaledImage;
+    private boolean loadImage = false;
     private float wPerH = 0;
     private int viewWidth;
     private int viewMaxW;
@@ -29,8 +31,10 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
     private int viewMaxH;
 
     private Point heldPoint;
-    private LinePair eraseLine;
     private LinePair lastDraw;
+    private LinePair lastMove;
+    private LinePair eraseLine;
+
 
     public PhotoEditView(Context context) {
         super(context);
@@ -73,7 +77,7 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        PhotoEditMode mode = activity.getStore().getPhotoEditMode();
+        PhotoEditMode mode = store.getPhotoEditMode();
         int action = event.getAction();
 
         if (mode == PhotoEditMode.DRAW) {
@@ -89,64 +93,56 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
 
     private void drawTouch(MotionEvent event, int action) {
         if (action == MotionEvent.ACTION_DOWN) {
-            clearLastDraw();
-            LinePair p = new LinePair();
-            p.getFirst().setTail((int)event.getX(), (int)event.getY());
-            p.getFirst().setHead((int)event.getX(), (int)event.getY());
-            p.getSecond().setTail((int)event.getX(), (int)event.getY());
-            p.getSecond().setHead((int)event.getX(), (int)event.getY());
+            clearLastDrawPair();
+            LinePair p = new LinePair((int)event.getX(), (int)event.getY());
             p.setInnerColour(Color.GREEN);
             lastDraw = p;
 
-            activity.getStore().addLinePair(p);
+            store.addLinePair(p);
         } else if (action == MotionEvent.ACTION_MOVE) {
-            ArrayList<LinePair> lines = activity.getStore().getLinePairs();
+            ArrayList<LinePair> lines = store.getLinePairs();
             LinePair p = lines.get(lines.size() - 1);
             p.getFirst().setHead((int)event.getX(), (int)event.getY());
             p.getSecond().setHead((int)event.getX(), (int)event.getY());
         }
     }
 
-    public void clearLastDraw() {
+    public void clearLastDrawPair() {
         if (lastDraw != null) {
             lastDraw.setInnerColour(Color.WHITE);
         }
         lastDraw = null;
     }
 
+    public void clearLastMovePair() {
+        if (lastMove != null) {
+            lastMove.setInnerColour(Color.WHITE);
+        }
+        lastMove = null;
+    }
+
     private void moveTouch(MotionEvent event, int action) {
         if (action == MotionEvent.ACTION_DOWN) {
-            boolean found = false;
-            for (LinePair pair : activity.getStore().getLinePairs()) {
-                pair.setInnerColour(Color.WHITE);
+            for (LinePair pair : store.getLinePairs()) {
                 Line l;
 
-                if (!found) {
-                    if (activity.getStore().isFirstFrame()) {
-                        l = pair.getFirst();
-                        if (l.getTail().isClicked(event.getX(), event.getY())) {
-                            heldPoint = l.getTail();
-                            pair.setInnerColour(Color.BLUE);
-                            found = true;
-                            continue;
-                        } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                            heldPoint = l.getHead();
-                            pair.setInnerColour(Color.BLUE);
-                            continue;
-                        }
-                    } else {
-                        l = pair.getSecond();
-                        if (l.getTail().isClicked(event.getX(), event.getY())) {
-                            heldPoint = l.getTail();
-                            pair.setInnerColour(Color.BLUE);
-                            found = true;
-                            continue;
-                        } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                            heldPoint = l.getHead();
-                            pair.setInnerColour(Color.BLUE);
-                            found = true;
-                            continue;
-                        }
+                if (store.isFirstFrame()) {
+                    l = pair.getFirst();
+                    if (l.getTail().isClicked(event.getX(), event.getY())) {
+                        setMovingPoint(l.getTail(), pair);
+                        break;
+                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                        setMovingPoint(l.getHead(), pair);
+                        break;
+                    }
+                } else {
+                    l = pair.getSecond();
+                    if (l.getTail().isClicked(event.getX(), event.getY())) {
+                        setMovingPoint(l.getTail(), pair);
+                        break;
+                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                        setMovingPoint(l.getHead(), pair);
+                        break;
                     }
                 }
             }
@@ -159,9 +155,16 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    private void setMovingPoint(Point p, LinePair pair) {
+        clearLastMovePair();
+        heldPoint = p;
+        pair.setInnerColour(Color.BLUE);
+        lastMove = pair;
+    }
+
     private void eraseTouch(MotionEvent event, int action) {
         if (action == MotionEvent.ACTION_DOWN) {
-            ArrayList<LinePair> lines = activity.getStore().getLinePairs();
+            ArrayList<LinePair> lines = store.getLinePairs();
             // Line pair already selected
             if (eraseLine != null) {
                 for (int i = 0; i < lines.size(); i++) {
@@ -170,22 +173,22 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
                     Line l;
 
                     if (pair == eraseLine) {
-                        if (activity.getStore().isFirstFrame()) {
+                        if (store.isFirstFrame()) {
                             l = pair.getFirst();
                             if (l.getTail().isClicked(event.getX(), event.getY())) {
-                                activity.getStore().removeLinePair(i);
+                                store.removeLinePair(i);
                                 break;
                             } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                                activity.getStore().removeLinePair(i);
+                                store.removeLinePair(i);
                                 break;
                             }
                         } else {
                             l = pair.getSecond();
                             if (l.getTail().isClicked(event.getX(), event.getY())) {
-                                activity.getStore().removeLinePair(i);
+                                store.removeLinePair(i);
                                 break;
                             } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                                activity.getStore().removeLinePair(i);
+                                store.removeLinePair(i);
                                 break;
                             }
                         }
@@ -194,42 +197,37 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
                 eraseLine = null;
             // Line pair not selected
             } else {
-                boolean found = false;
                 for (int i = 0; i < lines.size(); i++) {
                     LinePair pair = lines.get(i);
                     Line l;
 
-                    if (activity.getStore().isFirstFrame()) {
+                    if (store.isFirstFrame()) {
                         l = pair.getFirst();
                         if (l.getTail().isClicked(event.getX(), event.getY())) {
-                            eraseLine = pair;
-                            found = true;
+                            setEraseLine(pair);
                             break;
                         } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                            eraseLine = pair;
-                            found = true;
+                            setEraseLine(pair);
                             break;
                         }
                     } else {
                         l = pair.getSecond();
                         if (l.getTail().isClicked(event.getX(), event.getY())) {
-                            eraseLine = pair;
-                            found = true;
+                            setEraseLine(pair);
                             break;
                         } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                            eraseLine = pair;
-                            found = true;
+                            setEraseLine(pair);
                             break;
                         }
                     }
                 }
-
-                // Collision found, colour red
-                if (found) {
-                    eraseLine.setInnerColour(Color.RED);
-                }
             }
         }
+    }
+
+    private void setEraseLine(LinePair pair) {
+        eraseLine = pair;
+        eraseLine.setInnerColour(Color.RED);
     }
 
     @Override
@@ -237,14 +235,17 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
         if (canvas != null) {
             super.draw(canvas);
             canvas.drawColor(Color.BLACK);
-            if (currentImage != null) {
-                Bitmap scaled = Bitmap.createScaledBitmap(currentImage, viewWidth, viewHeight, true);
-                activity.getStore().setBitmapScale(new Point(scaled.getWidth(), scaled.getHeight()));
-                canvas.drawBitmap(scaled, 0, 0, null);
+
+            if (scaledImage != null && scaledImage.getWidth() == viewWidth && scaledImage.getHeight() == viewHeight && !loadImage) {
+                store.setBitmapScale(new Point(scaledImage.getWidth(), scaledImage.getHeight()));
+                canvas.drawBitmap(scaledImage, 0, 0, null);
+            } else if (currentImage != null){
+                scaledImage = Bitmap.createScaledBitmap(currentImage, viewWidth, viewHeight, true);
+                loadImage = false;
             }
 
-            ArrayList<LinePair> pairs = activity.getStore().getLinePairs();
-            if (activity.getStore().isFirstFrame()) {
+            ArrayList<LinePair> pairs = store.getLinePairs();
+            if (store.isFirstFrame()) {
                 for (int i = 0; i < pairs.size(); i++) {
                     LinePair pair = pairs.get(i);
                     pair.drawFirst(canvas);
@@ -258,13 +259,14 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public void setActivity(MainActivity activity) {
-        this.activity = activity;
+    public void setStore(ActivityStore store) {
+        this.store = store;
     }
 
     public void setCurrentImage(Bitmap bitmap) {
         setViewMargins(bitmap);
         this.currentImage = bitmap;
+        this.loadImage = true;
     }
 
     private void setViewMargins(Bitmap b) {
@@ -300,7 +302,7 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void resetLinePairColour() {
-        for (LinePair lp : activity.getStore().getLinePairs()) {
+        for (LinePair lp : store.getLinePairs()) {
             lp.setInnerColour(Color.WHITE);
         }
     }

@@ -39,7 +39,7 @@ public class PhotoEditFragment extends Fragment {
         super.onStart();
 
         editView = activity.findViewById(R.id.surfaceView);
-        editView.setActivity(activity);
+        editView.setStore(activity.getStore());
         editView.setCurrentImage(activity.getStore().getStartFrame());
     }
 
@@ -61,7 +61,7 @@ public class PhotoEditFragment extends Fragment {
             public void onClick(View v) {
                 activity.getStore().setPhotoEditMode(PhotoEditMode.MOVE);
                 editView.resetLinePairColour();
-                editView.clearLastDraw();
+                editView.clearLastDrawPair();
             }
         });
 
@@ -72,7 +72,7 @@ public class PhotoEditFragment extends Fragment {
             public void onClick(View v) {
                 activity.getStore().setPhotoEditMode(PhotoEditMode.ERASE);
                 editView.resetLinePairColour();
-                editView.clearLastDraw();
+                editView.clearLastDrawPair();
             }
         });
     }
@@ -81,7 +81,7 @@ public class PhotoEditFragment extends Fragment {
     public void onStop() {
         super.onStop();
         editView.resetLinePairColour();
-        editView.clearLastDraw();
+        editView.clearLastDrawPair();
     }
 
     private void initImgEditButtons(View v) {

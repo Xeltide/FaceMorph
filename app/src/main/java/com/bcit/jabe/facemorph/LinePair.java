@@ -9,16 +9,24 @@ import android.graphics.Paint;
 
 public class LinePair extends Pair<Line> {
 
-    LinePair() {
+    public LinePair() {
         this(new Line(), new Line());
     }
 
-    LinePair(Line first, Line second) {
+    public LinePair(Line first, Line second) {
         super(first, second);
 
         Paint p = new Paint();
         p.setStrokeWidth(10);
         setPaint(p);
+    }
+
+    public LinePair(int x, int y) {
+        this(new Line(), new Line());
+        getFirst().setTail(x, y);
+        getFirst().setHead(x, y);
+        getSecond().setTail(x, y);
+        getSecond().setHead(x, y);
     }
 
     public Point getTweenPointHead(float percentBetween) {

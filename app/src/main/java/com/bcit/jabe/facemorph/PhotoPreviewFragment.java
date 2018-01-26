@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -119,9 +120,23 @@ public class PhotoPreviewFragment extends Fragment {
                     imgPreview.setImageBitmap(bitmap);
                     enablePlusClick = false;
                     if (firstImage) {
-                        activity.getStore().setStartFrame(bitmap);
+                        Bitmap endFrame = activity.getStore().getEndFrame();
+                        if (endFrame != null && endFrame.getWidth() == bitmap.getWidth() && endFrame.getHeight() == bitmap.getHeight()) {
+                            activity.getStore().setStartFrame(bitmap);
+                        } else if (endFrame == null) {
+                            activity.getStore().setStartFrame(bitmap);
+                        } else {
+                            Toast.makeText(activity.getBaseContext(), "Selected images must be the same dimensions; " + endFrame.getWidth() + " x " + endFrame.getHeight(), Toast.LENGTH_LONG).show();
+                        }
                     } else {
-                        activity.getStore().setEndFrame(bitmap);
+                        Bitmap startFrame = activity.getStore().getStartFrame();
+                        if (startFrame != null && startFrame.getWidth() == bitmap.getWidth() && startFrame.getHeight() == bitmap.getHeight()) {
+                            activity.getStore().setEndFrame(bitmap);
+                        } else if (startFrame == null) {
+                            activity.getStore().setEndFrame(bitmap);
+                        } else {
+                            Toast.makeText(activity.getBaseContext(), "Selected images must be the same dimensions; " + startFrame.getWidth() + " x " + startFrame.getHeight(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
