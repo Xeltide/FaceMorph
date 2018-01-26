@@ -1,6 +1,7 @@
 package com.bcit.jabe.facemorph;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 /**
@@ -59,14 +60,25 @@ public class Line extends Drawable {
     }
 
     public void draw(Canvas canvas) {
+        paint.setColor(Color.BLACK);
         canvas.drawLine(tail.getX(), tail.getY(), head.getX(), head.getY(), paint);
+        paint.setColor(innerColour);
+        float w = paint.getStrokeWidth();
+        paint.setStrokeWidth(3);
+        canvas.drawLine(tail.getX(), tail.getY(), head.getX(), head.getY(), paint);
+        paint.setStrokeWidth(w);
         if (drawPoints) {
             tail.draw(canvas);
             head.draw(canvas);
         }
     }
 
+    public void setInnerColour(int colour) {
+        innerColour = colour;
+    }
+
     private boolean drawPoints = true;
     private Point tail;
     private Point head;
+    private int innerColour = Color.WHITE;
 }

@@ -73,8 +73,6 @@ public class Morpher {
             betweenFrames.add(b);
         }
 
-        int h = betweenFrames.get(0).getHeight();
-        int b = betweenFrames.get(0).getWidth();
         return betweenFrames;
     }
 
@@ -83,8 +81,8 @@ public class Morpher {
         float xScale = (float)start.getWidth() / frameScale.getX();
         float yScale = (float)start.getHeight() / frameScale.getY();
         LinkedList<ArrayList<Line>> frameLines = new LinkedList<>();
-        ArrayList<Line> startLines = new ArrayList<Line>();
-        ArrayList<Line> endLines = new ArrayList<Line>();
+        ArrayList<Line> startLines = new ArrayList<>();
+        ArrayList<Line> endLines = new ArrayList<>();
 
         for (int i = 0; i < frameCount; i++) {
             frameLines.add(new ArrayList<Line>());

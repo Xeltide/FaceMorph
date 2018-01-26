@@ -29,6 +29,7 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
     private int viewMaxH;
 
     private Point heldPoint;
+    private LinePair eraseLine;
 
     public PhotoEditView(Context context) {
         super(context);
@@ -111,18 +112,22 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
                     l = pair.getFirst();
                     if (l.getTail().isClicked(event.getX(), event.getY())) {
                         heldPoint = l.getTail();
+                        pair.setInnerColour(Color.BLUE);
                         break;
                     } else if (l.getHead().isClicked(event.getX(), event.getY())) {
                         heldPoint = l.getHead();
+                        pair.setInnerColour(Color.BLUE);
                         break;
                     }
                 } else {
                     l = pair.getSecond();
                     if (l.getTail().isClicked(event.getX(), event.getY())) {
                         heldPoint = l.getTail();
+                        pair.setInnerColour(Color.BLUE);
                         break;
                     } else if (l.getHead().isClicked(event.getX(), event.getY())) {
                         heldPoint = l.getHead();
+                        pair.setInnerColour(Color.BLUE);
                         break;
                     }
                 }
@@ -139,28 +144,71 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
     private void eraseTouch(MotionEvent event, int action) {
         if (action == MotionEvent.ACTION_DOWN) {
             ArrayList<LinePair> lines = activity.getStore().getLinePairs();
-            for (int i = 0; i < lines.size(); i++) {
-                LinePair pair = lines.get(i);
-                Line l;
+            // Line pair already selected
+            if (eraseLine != null) {
+                for (int i = 0; i < lines.size(); i++) {
+                    LinePair pair = lines.get(i);
+                    pair.setInnerColour(Color.WHITE);
+                    Line l;
 
-                if (activity.getStore().isFirstFrame()) {
-                    l = pair.getFirst();
-                    if (l.getTail().isClicked(event.getX(), event.getY())) {
-                        activity.getStore().removeLinePair(i);
-                        break;
-                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                        activity.getStore().removeLinePair(i);
-                        break;
+                    if (pair == eraseLine) {
+                        if (activity.getStore().isFirstFrame()) {
+                            l = pair.getFirst();
+                            if (l.getTail().isClicked(event.getX(), event.getY())) {
+                                activity.getStore().removeLinePair(i);
+                                break;
+                            } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                                activity.getStore().removeLinePair(i);
+                                break;
+                            }
+                        } else {
+                            l = pair.getSecond();
+                            if (l.getTail().isClicked(event.getX(), event.getY())) {
+                                activity.getStore().removeLinePair(i);
+                                break;
+                            } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                                activity.getStore().removeLinePair(i);
+                                break;
+                            }
+                        }
                     }
-                } else {
-                    l = pair.getSecond();
-                    if (l.getTail().isClicked(event.getX(), event.getY())) {
-                        activity.getStore().removeLinePair(i);
-                        break;
-                    } else if (l.getHead().isClicked(event.getX(), event.getY())) {
-                        activity.getStore().removeLinePair(i);
-                        break;
+                }
+                eraseLine = null;
+            // Line pair not selected
+            } else {
+                boolean found = false;
+                for (int i = 0; i < lines.size(); i++) {
+                    LinePair pair = lines.get(i);
+                    Line l;
+
+                    if (activity.getStore().isFirstFrame()) {
+                        l = pair.getFirst();
+                        if (l.getTail().isClicked(event.getX(), event.getY())) {
+                            eraseLine = pair;
+                            found = true;
+                            break;
+                        } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                            eraseLine = pair;
+                            found = true;
+                            break;
+                        }
+                    } else {
+                        l = pair.getSecond();
+                        if (l.getTail().isClicked(event.getX(), event.getY())) {
+                            eraseLine = pair;
+                            found = true;
+                            break;
+                        } else if (l.getHead().isClicked(event.getX(), event.getY())) {
+                            eraseLine = pair;
+                            found = true;
+                            break;
+                        }
                     }
+                }
+
+                // Collision found, colour red
+                if (found) {
+                    eraseLine.setInnerColour(Color.RED);
                 }
             }
         }
@@ -230,6 +278,12 @@ public class PhotoEditView extends SurfaceView implements SurfaceHolder.Callback
         } else {
             s.setMargins(0, 0, 0, 0);
             requestLayout();
+        }
+    }
+
+    public void resetLinePairColour() {
+        for (LinePair lp : activity.getStore().getLinePairs()) {
+            lp.setInnerColour(Color.WHITE);
         }
     }
 }

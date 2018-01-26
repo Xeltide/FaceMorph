@@ -50,6 +50,7 @@ public class PhotoEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 activity.getStore().setPhotoEditMode(PhotoEditMode.DRAW);
+                editView.resetLinePairColour();
             }
         });
 
@@ -59,6 +60,7 @@ public class PhotoEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 activity.getStore().setPhotoEditMode(PhotoEditMode.MOVE);
+                editView.resetLinePairColour();
             }
         });
 
@@ -68,6 +70,7 @@ public class PhotoEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 activity.getStore().setPhotoEditMode(PhotoEditMode.ERASE);
+                editView.resetLinePairColour();
             }
         });
     }

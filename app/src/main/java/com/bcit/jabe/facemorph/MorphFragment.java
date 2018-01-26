@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 /**
  * Created by Xeltide on 23/01/2018.
@@ -23,6 +25,7 @@ public class MorphFragment extends Fragment {
     private FloatingActionButton morphPlayFAB;
     private FloatingActionButton cycleRightFAB;
     private FloatingActionButton cycleLeftFAB;
+    private ProgressBar progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,16 +61,18 @@ public class MorphFragment extends Fragment {
             }
         });
 
+        progress = activity.findViewById(R.id.progressBar);
+
         morphPlayFAB = activity.findViewById(R.id.morphPlayFAB);
         morphPlayFAB.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 if ((!activity.getStore().isFaceMorphed()) && (activity.getStore().getStartFrame() != null) && (activity.getStore().getEndFrame() != null)) {
-                    Morpher m = new Morpher(activity.getStore().getStartFrame(), activity.getStore().getEndFrame(), activity.getStore().getLinePairs(), activity.getStore().getFrameCount(), activity.getStore().getBitmapScale());
-                    activity.getStore().setFrames(m.morph());
+                    MorphParentThread t = new MorphParentThread(activity.getStore(), progress, frameView);
+                    t.start();
                     activity.getStore().setIsFaceMorphed(true);
-                    frameView.setImageBitmap(activity.getStore().getFrame(0));
+                    progress.setVisibility(View.VISIBLE);
                 } else if (activity.getStore().isFaceMorphed()) {
 
                 }

@@ -1,6 +1,7 @@
 package com.bcit.jabe.facemorph;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 /**
@@ -44,7 +45,10 @@ public class Point extends Drawable implements Clickable {
     }
 
     public void draw(Canvas canvas) {
+        paint.setColor(Color.BLACK);
         canvas.drawCircle(x, y, radius, paint);
+        paint.setColor(paintColour);
+        canvas.drawCircle(x, y, radius - 7, paint);
     }
 
     @Override
@@ -94,8 +98,14 @@ public class Point extends Drawable implements Clickable {
         this.y *= scaleY;
     }
 
+    public void setInnerColour(int colour) {
+        paintColour = colour;
+    }
+
     private int x;
     private int y;
     private float d;
     private int radius = 50;
+
+    private int paintColour = Color.WHITE;
 }

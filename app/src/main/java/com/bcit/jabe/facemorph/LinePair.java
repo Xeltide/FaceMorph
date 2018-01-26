@@ -60,4 +60,13 @@ public class LinePair extends Pair<Line> {
     public void drawSecond(Canvas canvas) {
         this.second.draw(canvas);
     }
+
+    public void setInnerColour(int colour) {
+        first.setInnerColour(colour);
+        first.getTail().setInnerColour(colour);
+        first.getHead().setInnerColour(colour);
+        second.setInnerColour(colour);
+        second.getTail().setInnerColour(colour);
+        second.getHead().setInnerColour(colour);
+    }
 }
