@@ -3,21 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_choose_pictures"
-            android:icon="@drawable/ic_menu_camera"
-            android:checked="true"
-            android:title="Choose Pictures" />
-        <item
-            android:id="@+id/nav_edit_lines"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Edit Lines" />
-        <item
-            android:id="@+id/nav_face_morph"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="FaceMorph" />
-    </group>
+    <item android:title="@string/actions">
+        <menu>
+            <item
+                android:id="@+id/nav_choose_pictures"
+                android:checked="true"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="Choose Pictures" />
+            <item
+                android:id="@+id/nav_edit_lines"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Edit Lines" />
+            <item
+                android:id="@+id/nav_face_morph"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="FaceMorph" />
+        </menu>
+    </item>
 
     <item android:title="@string/project">
         <menu>

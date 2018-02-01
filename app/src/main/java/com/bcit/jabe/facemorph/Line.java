@@ -4,11 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.io.Serializable;
+
 /**
  * Created by Xeltide on 15/01/2018.
  */
 
-public class Line extends Drawable {
+public class Line extends Drawable implements Serializable {
 
     Line() {
         this(0, 0, 0, 0);
@@ -61,12 +63,11 @@ public class Line extends Drawable {
 
     public void draw(Canvas canvas) {
         paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(12);
         canvas.drawLine(tail.getX(), tail.getY(), head.getX(), head.getY(), paint);
         paint.setColor(innerColour);
-        float w = paint.getStrokeWidth();
         paint.setStrokeWidth(3);
         canvas.drawLine(tail.getX(), tail.getY(), head.getX(), head.getY(), paint);
-        paint.setStrokeWidth(w);
         if (drawPoints) {
             tail.draw(canvas);
             head.draw(canvas);

@@ -1,6 +1,7 @@
 package com.bcit.jabe.facemorph;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
-        store.saveToBundle(bundle);
+        //store.saveToBundle(bundle);
     }
 
     @Override
@@ -85,9 +86,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        store.setLastItem(item.getItemId());
-
-        setFragment(store.getLastItem());
+        if (item.getItemId() == R.id.nav_new) {
+            recreate();
+            int lastScreen = store.getLastItem();
+            store = new ActivityStore();
+            setFragment(lastScreen);
+            store.setLastItem(lastScreen);
+        } else if (item.getItemId() == R.id.nav_open) {
+            ActivityStore saved = store.load(getFilesDir().getPath().toString() + "/test.mor");
+            if (saved != null) {
+                store = saved;
+                setFragment(R.id.nav_choose_pictures);
+            } else {
+                android.util.Log.d("NULL STORE REF", "Failed to load store");
+            }
+        } else if (item.getItemId() == R.id.nav_save) {
+            store.save(getFilesDir().getPath().toString() + "/test.mor");
+            android.util.Log.d("SAVING", "Completed save");
+        } else {
+            store.setLastItem(item.getItemId());
+            setFragment(store.getLastItem());
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

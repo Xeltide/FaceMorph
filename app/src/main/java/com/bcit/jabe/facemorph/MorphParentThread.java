@@ -85,6 +85,8 @@ public class MorphParentThread extends Thread {
         }
 
         store.setFrames(crossDissolve());
+        store.setIsMorphing(false);
+        store.setIsFaceMorphed(true);
 
         frameView.post(new Runnable() {
 

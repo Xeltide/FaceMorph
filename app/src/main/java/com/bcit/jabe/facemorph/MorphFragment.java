@@ -87,10 +87,10 @@ public class MorphFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                if ((!activity.getStore().isFaceMorphed()) && (activity.getStore().getStartFrame() != null) && (activity.getStore().getEndFrame() != null)) {
+                if ((!activity.getStore().isFaceMorphed() && !activity.getStore().isMorphing()) && (activity.getStore().getStartFrame() != null) && (activity.getStore().getEndFrame() != null)) {
                     MorphParentThread t = new MorphParentThread(activity.getStore(), progress, frameView);
                     t.start();
-                    activity.getStore().setIsFaceMorphed(true);
+                    activity.getStore().setIsMorphing(true);
                     progress.setVisibility(View.VISIBLE);
                     morphPlayFAB.setImageResource(R.drawable.play);
                 } else if (activity.getStore().isFaceMorphed() && !cyclingImages) {

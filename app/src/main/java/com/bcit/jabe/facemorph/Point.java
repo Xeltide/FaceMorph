@@ -4,11 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.io.Serializable;
+
 /**
  * Created by Xeltide on 15/01/2018.
  */
 
-public class Point extends Drawable implements Clickable {
+public class Point extends Drawable implements Clickable, Serializable {
 
     Point() {
         this(0, 0);

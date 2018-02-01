@@ -3,11 +3,13 @@ package com.bcit.jabe.facemorph;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import java.io.Serializable;
+
 /**
  * Created by Xeltide on 15/01/2018.
  */
 
-public class LinePair extends Pair<Line> {
+public class LinePair extends Pair<Line> implements Serializable {
 
     public LinePair() {
         this(new Line(), new Line());
